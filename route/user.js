@@ -1,0 +1,11 @@
+const router = require('express').Router();
+const UserController = require('../controller/UserController.js');
+router.get('/article/:id',UserController.readArticleById);
+router.get('/article/:offset/:limite',UserController.readArticle);
+router.post('/command',UserController.createCommand);
+router.get('/command/:id',UserController.readCommandById);
+router.get('/command',UserController.readCommand);
+router.post('/vendor/subscribe',UserController.subscribe);
+router.delete('/:id',UserController.deleteAcc);
+router.delete('/command/:id',UserController.delecteCommand);
+module.exports = router;
