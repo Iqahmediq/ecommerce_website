@@ -8,7 +8,7 @@ const UserSchema = new Schema({
     lastName : String ,
     address : String ,
     password : {set:(password)=>{
-        return bcrypt.hashSync(password,20);
+        return bcrypt.hashSync(password,1);
     },type : String},
     email : String ,
     phone : String ,
