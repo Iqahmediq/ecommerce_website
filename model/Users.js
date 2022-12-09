@@ -11,7 +11,7 @@ const UserSchema = new Schema({
     role : "guest"|"user"|"admin"|"vendor"
 })
 const vendorSchema = new Schema()
-vendorSchema.add(UserSchema).add({article : []});
+vendorSchema.add(UserSchema).add({article : [],comfirmed:Boolean,subscrition:{},image:String});
 const Vendor = mongoose.model('Vendor',vendorSchema);
 const User =mongoose.model('User',UserSchema);
 module.exports = {User,Vendor};

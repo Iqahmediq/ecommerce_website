@@ -1,7 +1,15 @@
+
 const router = require('express').Router();
-const UserController = require('../controller/UserController.js');
-router.get('/article/:id',UserController.readArticleById);
-router.get('/article/:offset/:limite',UserController.readArticle);
+const VendorController = require('../controller/UserController.js');
+// route("/vendor")
+router.get('/',VendorController.read);
+router.put('/',VendorController.update);
+router.delete('/:id',VendorController.delete);
+router.get('/article/:id',VendorController.readArticleById);
+router.get('/article/:offset/:limite',VendorController.readArticle);
+router.post('/article',VendorController.createArticle);
+router.put('/article/:id',VendorController.updateArticle);
 router.delete('/article/:id',VendorController.deleteById);
-router.post('/signUp',AuthController.signUp);
+router.get('/command',VendorController.Command);
+router.use('/stats',require('./statsVendor.js'))
 module.exports = router;
