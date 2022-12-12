@@ -3,13 +3,14 @@ const mongoose  = require('mongoose');
 const Schema    = mongoose.Schema;
 const ArticleSchema = new Schema({
     id: String ,
+    vendor : String ,
     name : String,
     description : String ,
     qte: Number,
-    price : Number ,
+    price : Number,
     image : String,
-    vendor : String ,
-    category : String
+    category : String,
+    comande:[]
 })
-const Article =mongoose.model('Article',ArticleSchema);
+const Article = mongoose.model('Article',ArticleSchema);
 module.exports = Article;

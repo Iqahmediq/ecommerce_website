@@ -24,6 +24,10 @@ const UserSchema = new Schema({
     image:String
 })
 
+UserSchema.methods.getCommandes = function(){
+    return this.article.map((item)=>item.comande)
+}
+
 UserSchema.methods.login=function (password){
     return bcrypt.compareSync(password,this.password);
 }
