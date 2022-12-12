@@ -16,7 +16,7 @@ const UserSchema = new Schema({
     phone : String ,
     role : String,
     article:{
-        type:[],
+        type:{},
         default:null
     },
     confirmed:Boolean,
@@ -25,7 +25,15 @@ const UserSchema = new Schema({
 })
 
 UserSchema.methods.getCommandes = function(){
-    return this.article.map((item)=>item.comande)
+    // return this.article.map((item)=>item.comande)
+    return Object.keys(this.article).map((item)=>this.article[item]).map((item)=>item.comande).filter((item)=>item?.length>0);
+}
+
+UserSchema.methods.returns = function(){
+    return {
+        ...this._doc,
+        password:undefined
+    }
 }
 
 UserSchema.methods.login=function (password){

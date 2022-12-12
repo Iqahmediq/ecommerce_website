@@ -10,7 +10,9 @@ class VendorController {
         const {user_id} = req.user;
         const user = await User.findOne({}).where('id').equals(user_id);
         if(!user)/* revoke token */ return next(createError('cant find your account','something went wrong, your account is not found',404));
-        return res.status(200).json(user);
+        return res.status(200).json({
+            user:user.returns()
+        });
     }
     
     static async update(req,res,next) {
@@ -30,10 +32,10 @@ class VendorController {
             if(duplicate && duplicate.phone==data.phone) return next(createError("taken phone","phone all ready exist,cannot update user",400));
             user.phone = data.phone;
         }
-        if(name)     user.name      = data.name;
-        if(lastName) user.lastName  = data.lastName;
-        if(address)  user.address   = data.address;
-        if(password) user.password  = data.password;
+        if(data.name)     user.name      = data.name;
+        if(data.lastName) user.lastName  = data.lastName;
+        if(data.address)  user.address   = data.address;
+        if(data.password) user.password  = data.password;
         await user.save();
         return res.status(202).json({
             user
@@ -44,7 +46,7 @@ class VendorController {
         const {user_id} = req.user;
         const user = await User.findOne({}).where('id').equals(user_id);
         if(!user)/* revoke token */ return next(createError('cant find your account','something went wrong, your account is not found',404));
-
+        await Article.deleteMany({}).where('vendor').equals(user_id);
         const data = await user.delete();
         return res.status(202).json(data);
     }
@@ -65,16 +67,29 @@ class VendorController {
         /* after create article validator */
         /* connected user id  */
         const {user_id} = req.user;
+        const vendor = await User.findOne({}).where('id').equals(user_id);
         const data = req.body;
-        const article = new Article({...data,vendor:user_id,id:uuidv4(),comande:[]});
-        return await article.save();
+        const article = new Article({...data,vendor:user_id,id:uuidv4(),comande:null});
+        vendor.article = {
+            ...vendor.article,
+            [article.id]:article
+        }
+        try{
+            await article.save();
+            await vendor.save();
+            return res.status(202).json({
+                article
+            });
+        }catch(err){
+            return next(createError("something went wrong","internal server error",500));
+        }
     }
     
     static async readArticle(req,res,next) {
-        const {offset,limit} = req.params;
-        const articles = await Article.find({}).skip(offset).limit(limit);
+        const {user_id} = req.user;
+        const vendor = await User.findOne({}).where('id').equals(user_id);
         return res.status(200).json({
-            articles
+            articles:vendor.article
         })
     }
     
@@ -87,16 +102,29 @@ class VendorController {
         /* new values */
         const data = req.body;
         /* find article by id */
+        const vendor  = await User.findOne({}).where('id').equals(user_id);
         const article = await Article.findOne({}).where('id').equals(id);
+        
         if(!article)/* should revoke token ('front') */ return next(createError('article not found','something went wrong, article is not found',404));
         if(article.vendor !== user_id) /* not he's article not-permitted */ return next(createError('forbidden article','this article is not yours',403));
+        
         if(data?.name)         article.name        = data.name;
         if(data?.qte)          article.qte         = data.qte;
         if(data?.price)        article.price       = data.price;
         if(data?.image)        article.image       = data.image;
         if(data?.category)     article.category    = data.category;
         if(data?.description)  article.description = data.description;
-        return await article.save();
+        vendor.article = {
+            ...vendor.article,
+            [article.id]:article
+        }
+        try{
+            await vendor.save();
+            await article.save();
+            return res.status(202).json(article) ;
+        }catch(err){
+            return next(createError("something went wrong","internal server error",500));
+        }
     }
     
     static async deleteArticleById(req,res,next) {
@@ -104,7 +132,14 @@ class VendorController {
         const {user_id} = req.user;
         /* connected article id  */
         const {id} = req.params;
-        const response = await Article.deleteOne({}).where('id').equals(id);
+        const vendor    = await User.findOne({}).where('id').equals(user_id);
+        const article  = await Article.findOne({}).where('id').equals(id);
+        if(!article) return next(createError("article not found","there's no article with this id",404))
+        vendor.article = {
+            ...vendor.article,
+            [id]:undefined
+        };
+        await vendor.save();
         const code =  (response.deletedCount!=0)?202:404;
         /* 
             update commands here!

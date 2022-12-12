@@ -10,7 +10,10 @@ const ArticleSchema = new Schema({
     price : Number,
     image : String,
     category : String,
-    comande:[]
+    comande:{
+        type:[],
+        default:null
+    }
 })
 const Article = mongoose.model('Article',ArticleSchema);
 module.exports = Article;

@@ -21,7 +21,7 @@ class AuthController {
         if (user && user.email==data.email) return next(createError("taken email","email all ready exist",400));
         if (user && user.phone==data.phone) return next(createError("taken phone","phone all ready exist",400));
         
-        user  =  new User({...data,id:uuid()});
+        user  =  new User({...data,id:uuid(),article:{}});
         
         console.log(user);
         
