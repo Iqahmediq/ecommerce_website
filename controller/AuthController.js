@@ -12,7 +12,7 @@ class AuthController {
         return res.status(202).json({
             accessToken:token
         });
-    }
+    } 
     static async signUp(req,res,next){
         console.log(__filename);
         const data = req.body
