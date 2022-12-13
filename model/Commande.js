@@ -6,8 +6,8 @@ const CommandeSchema = new Schema({
     description : String,
     total : Number,
     cart : [],
-    status: "payed"|"not payed",
-    address : String,
+    status: "payed"|"not payes",
+    address : String ,
 })
-const Commande = mongoose.model('Commande',CommandeSchema);
-module.exports = Commande; 
+const Commande =mongoose.model('Commande',CommandeSchema);
+module.exports = Commande;

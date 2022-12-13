@@ -3,12 +3,19 @@ const User = require('../model/Users')
 const Article = require('../model/Article');
 const Command = require('../model/Commande');
 const uuidv4 = require('uuid').v4;
+<<<<<<< HEAD
  
+=======
+
+>>>>>>> 6eb037c4ae353d9ca4ce1bf014fbb1b8effcbc23
 class VendorController {
    
     static async read(req,res,next) {
         const {user_id} = req.user;
+<<<<<<< HEAD
         console.log(user_id);
+=======
+>>>>>>> 6eb037c4ae353d9ca4ce1bf014fbb1b8effcbc23
         const user = await User.findOne({}).where('id').equals(user_id);
         if(!user)/* revoke token */ return next(createError('cant find your account','something went wrong, your account is not found',404));
         return res.status(200).json({

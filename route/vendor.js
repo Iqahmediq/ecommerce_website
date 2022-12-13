@@ -1,4 +1,3 @@
-
 const router = require('express').Router();
 const VendorController = require('../controller/VendorController.js');
 const updateValidator = require('../middlewares/validator/vendor/update.validator');
